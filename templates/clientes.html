@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Clientes</h2>
+
+<form method="POST" action="/novo_cliente">
+
+<div class="mb-3">
+<label>Nome</label>
+<input type="text" name="nome" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Telefone</label>
+<input type="text" name="telefone" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Email</label>
+<input type="email" name="email" class="form-control">
+</div>
+
+<button type="submit" class="btn btn-primary">
+Cadastrar
+</button>
+
+</form>
+
+<hr>
+
+<table class="table">
+
+<tr>
+<th>Nome</th>
+<th>Telefone</th>
+<th>Email</th>
+<th>Ações</th>
+</tr>
+
+{% for c in clientes %}
+
+<tr>
+
+<td>{{c["nome"]}}</td>
+<td>{{c["telefone"]}}</td>
+<td>{{c["email"]}}</td>
+
+<td>
+
+<a href="/editar_cliente/{{c['id']}}" class="btn btn-warning btn-sm">
+Editar
+</a>
+
+<a href="/excluir_cliente/{{c['id']}}" class="btn btn-danger btn-sm">
+Excluir
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

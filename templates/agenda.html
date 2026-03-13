@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Agenda de Contatos</h2>
+
+<form method="POST" action="/nova_tarefa">
+
+<div class="mb-3">
+<label>Cliente</label>
+<input type="text" name="cliente" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Descrição</label>
+<input type="text" name="descricao" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Data do Contato</label>
+<input type="date" name="data" class="form-control">
+</div>
+
+<button type="submit" class="btn btn-primary">Salvar</button>
+
+</form>
+
+<hr>
+
+<table class="table">
+
+<tr>
+<th>Cliente</th>
+<th>Tarefa</th>
+<th>Data</th>
+</tr>
+
+{% for t in tarefas %}
+
+<tr>
+<td>{{t[1]}}</td>
+<td>{{t[2]}}</td>
+<td>{{t[3]}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Dashboard ZenLife</h2>
+
+<div class="row">
+
+<div class="col-md-3">
+<div class="card bg-primary text-white">
+<div class="card-body">
+Clientes
+<h4>{{total_clientes}}</h4>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-success text-white">
+<div class="card-body">
+Leads
+<h4>{{total_leads}}</h4>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-warning text-white">
+<div class="card-body">
+Apólices
+<h4>{{total_apolices}}</h4>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card bg-dark text-white">
+<div class="card-body">
+Conversão
+<h4>{{conversao}}%</h4>
+</div>
+</div>
+</div>
+
+</div>
+
+<hr>
+
+<h3>Métricas de Vendas</h3>
+
+<div class="row">
+
+<div class="col-md-4">
+Leads Novos: {{leads_novos}}
+</div>
+
+<div class="col-md-4">
+Propostas: {{propostas}}
+</div>
+
+<div class="col-md-4">
+Fechados: {{fechados}}
+</div>
+
+</div>
+
+<hr>
+
+<h3>Tipos de Seguro</h3>
+
+<canvas id="grafico"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+var ctx = document.getElementById("grafico");
+
+new Chart(ctx, {
+
+type: 'bar',
+
+data: {
+
+labels: {{tipos | tojson}},
+
+datasets: [{
+
+label: 'Seguros',
+
+data: {{quantidades | tojson}}
+
+}]
+
+}
+
+});
+
+</script>
+
+{% endblock %}

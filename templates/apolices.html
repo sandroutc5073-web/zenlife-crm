@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Apólices</h2>
+
+<form method="POST" action="/nova_apolice">
+
+<div class="mb-3">
+<label>Cliente</label>
+<input type="text" name="cliente" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Tipo de Seguro</label>
+<input type="text" name="seguro" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Seguradora</label>
+<input type="text" name="seguradora" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Valor</label>
+<input type="number" name="valor" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Data início</label>
+<input type="date" name="inicio" class="form-control">
+</div>
+
+<div class="mb-3">
+<label>Renovação</label>
+<input type="date" name="renovacao" class="form-control">
+</div>
+
+<button class="btn btn-success">
+Salvar Apólice
+</button>
+
+</form>
+
+<hr>
+
+<h3>Lista de Apólices</h3>
+
+<table class="table">
+
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Seguro</th>
+<th>Seguradora</th>
+<th>Valor</th>
+<th>Renovação</th>
+</tr>
+
+{% for a in apolices %}
+
+<tr>
+<td>{{a[0]}}</td>
+<td>{{a[1]}}</td>
+<td>{{a[2]}}</td>
+<td>{{a[3]}}</td>
+<td>{{a[4]}}</td>
+<td>{{a[6]}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
