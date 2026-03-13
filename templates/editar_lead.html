@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Editar Lead</h2>
+
+<form method="POST">
+    <div class="mb-3">
+        <label>Nome</label>
+        <input type="text" name="nome" value="{{lead[1]}}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Telefone</label>
+        <input type="text" name="telefone" value="{{lead[2]}}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Tipo de Seguro</label>
+        <select name="seguro" class="form-control" required>
+            <option {% if lead[3]=='Auto' %}selected{% endif %}>Auto</option>
+            <option {% if lead[3]=='Vida' %}selected{% endif %}>Vida</option>
+            <option {% if lead[3]=='Saúde' %}selected{% endif %}>Saúde</option>
+            <option {% if lead[3]=='Residencial' %}selected{% endif %}>Residencial</option>
+            <option {% if lead[3]=='Empresarial' %}selected{% endif %}>Empresarial</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Origem do Lead</label>
+        <select name="origem" class="form-control" required>
+            <option {% if lead[4]=='Instagram' %}selected{% endif %}>Instagram</option>
+            <option {% if lead[4]=='Facebook' %}selected{% endif %}>Facebook</option>
+            <option {% if lead[4]=='Google' %}selected{% endif %}>Google</option>
+            <option {% if lead[4]=='Indicação' %}selected{% endif %}>Indicação</option>
+            <option {% if lead[4]=='Site' %}selected{% endif %}>Site</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control" required>
+            <option {% if lead[5]=='Lead Novo' %}selected{% endif %}>Lead Novo</option>
+            <option {% if lead[5]=='Contato Realizado' %}selected{% endif %}>Contato Realizado</option>
+            <option {% if lead[5]=='Proposta Enviada' %}selected{% endif %}>Proposta Enviada</option>
+            <option {% if lead[5]=='Negociação' %}selected{% endif %}>Negociação</option>
+            <option {% if lead[5]=='Fechado' %}selected{% endif %}>Fechado</option>
+            <option {% if lead[5]=='Perdido' %}selected{% endif %}>Perdido</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Salvar</button>
+</form>
+
+{% endblock %}

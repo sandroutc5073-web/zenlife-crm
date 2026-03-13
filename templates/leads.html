@@ -4,84 +4,83 @@
 
 <h2>Leads</h2>
 
+<!-- Formulário para novo lead -->
 <form method="POST" action="/novo_lead">
-
-<div class="mb-3">
-<label>Nome</label>
-<input type="text" name="nome" class="form-control">
-</div>
-
-<div class="mb-3">
-<label>Telefone</label>
-<input type="text" name="telefone" class="form-control">
-</div>
-
-<div class="mb-3">
-<label>Tipo de Seguro</label>
-<select name="seguro" class="form-control">
-<option>Auto</option>
-<option>Vida</option>
-<option>Saúde</option>
-<option>Residencial</option>
-<option>Empresarial</option>
-</select>
-</div>
-
-<div class="mb-3">
-<label>Origem do Lead</label>
-<select name="origem" class="form-control">
-<option>Instagram</option>
-<option>Facebook</option>
-<option>Google</option>
-<option>Indicação</option>
-<option>Site</option>
-</select>
-</div>
-
-<div class="mb-3">
-<label>Status</label>
-<select name="status" class="form-control">
-<option>Lead Novo</option>
-<option>Contato Realizado</option>
-<option>Proposta Enviada</option>
-<option>Negociação</option>
-<option>Fechado</option>
-<option>Perdido</option>
-</select>
-</div>
-
-<button type="submit" class="btn btn-success">Salvar Lead</button>
-
+    <div class="mb-3">
+        <label>Nome</label>
+        <input type="text" name="nome" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Telefone</label>
+        <input type="text" name="telefone" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Tipo de Seguro</label>
+        <select name="seguro" class="form-control" required>
+            <option>Auto</option>
+            <option>Vida</option>
+            <option>Saúde</option>
+            <option>Residencial</option>
+            <option>Empresarial</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Origem do Lead</label>
+        <select name="origem" class="form-control" required>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>Google</option>
+            <option>Indicação</option>
+            <option>Site</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control" required>
+            <option>Lead Novo</option>
+            <option>Contato Realizado</option>
+            <option>Proposta Enviada</option>
+            <option>Negociação</option>
+            <option>Fechado</option>
+            <option>Perdido</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Salvar Lead</button>
 </form>
 
 <hr>
 
 <h3>Pipeline de Leads</h3>
 
-<table class="table">
-
-<tr>
-<th>ID</th>
-<th>Nome</th>
-<th>Telefone</th>
-<th>Seguro</th>
-<th>Origem</th>
-<th>Status</th>
-</tr>
-
-{% for lead in leads %}
-
-<tr>
-<td>{{lead[0]}}</td>
-<td>{{lead[1]}}</td>
-<td>{{lead[2]}}</td>
-<td>{{lead[3]}}</td>
-<td>{{lead[4]}}</td>
-<td>{{lead[5]}}</td>
-</tr>
-
-{% endfor %}
-
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Seguro</th>
+            <th>Origem</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lead in leads %}
+        <tr>
+            <td>{{lead[0]}}</td>
+            <td>{{lead[1]}}</td>
+            <td>{{lead[2]}}</td>
+            <td>{{lead[3]}}</td>
+            <td>{{lead[4]}}</td>
+            <td>{{lead[5]}}</td>
+            <td>
+                <a href="/editar_lead/{{lead[0]}}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="/excluir_lead/{{lead[0]}}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Deseja excluir este lead?')">Excluir</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}

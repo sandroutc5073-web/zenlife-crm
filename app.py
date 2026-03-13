@@ -47,7 +47,7 @@ def login():
 @app.route("/logout")
 def logout():
 
-    session.pop("usuario",None)
+    session.clear()
 
     return redirect("/login")
 
@@ -187,7 +187,104 @@ def novo_lead():
     conn.close()
 
     return redirect("/leads")
+    
+#=================
+#Excluir e Editar Lead
+#=================
+@app.route("/excluir_lead/<int:id>")
+def excluir_lead(id):
+    conn = sqlite3.connect("database.db")
+    conn.execute("DELETE FROM leads WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/leads")
+    
+@app.route("/editar_lead/<int:id>", methods=["GET","POST"])
+def editar_lead(id):
+    conn = sqlite3.connect("database.db")
 
+    if request.method == "POST":
+        nome = request.form["nome"]
+        telefone = request.form["telefone"]
+        seguro = request.form["seguro"]
+        origem = request.form["origem"]
+        status = request.form["status"]
+
+        conn.execute(
+            "UPDATE leads SET nome=?, telefone=?, seguro=?, origem=?, status=? WHERE id=?",
+            (nome, telefone, seguro, origem, status, id)
+        )
+
+        conn.commit()
+        conn.close()
+        return redirect("/leads")
+
+    lead = conn.execute("SELECT * FROM leads WHERE id=?", (id,)).fetchone()
+    conn.close()
+    
+    return render_template("editar_lead.html", lead=lead)
+    
+    
+#=========================
+# Excluir e Editar Apoloices
+#=========================
+
+@app.route("/excluir_apolice/<int:id>")
+def excluir_apolice(id):
+    conn = sqlite3.connect("database.db")
+    conn.execute("DELETE FROM apolices WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+    return redirect("/apolices")
+    
+@app.route("/editar_apolice/<int:id>", methods=["GET", "POST"])
+def editar_apolice(id):
+    conn = conectar()
+    
+    # Pega a apólice pelo ID
+    apolice = conn.execute("SELECT * FROM apolices WHERE id=?", (id,)).fetchone()
+    
+    if not apolice:
+        conn.close()
+        return "Apólice não encontrada", 404
+
+    if request.method == "POST":
+        # Campos do formulário
+        cliente = request.form["cliente"]
+        seguradora = request.form["seguradora"]
+        tipo_seguro = request.form["tipo_seguro"]
+        
+        # Trata valor e comissão para float seguro
+        valor_str = request.form.get("valor", "0").replace(",", ".")
+        try:
+            valor = float(valor_str)
+        except ValueError:
+            valor = 0
+
+        comissao_str = request.form.get("comissao", "0").replace(",", ".")
+        try:
+            comissao = float(comissao_str)
+        except ValueError:
+            comissao = 0
+
+        data_inicio = request.form["data_inicio"]
+        data_renovacao = request.form["data_renovacao"]
+        status = request.form.get("status", "Ativa")
+        seguro = request.form.get("seguro", "")
+
+        # Atualiza no banco
+        conn.execute("""
+            UPDATE apolices
+            SET cliente=?, seguradora=?, tipo_seguro=?, valor=?, comissao=?, data_inicio=?, data_renovacao=?, status=?, seguro=?
+            WHERE id=?
+        """, (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro, id))
+
+        conn.commit()
+        conn.close()
+        return redirect("/apolices")
+
+    conn.close()
+    return render_template("editar_apolice.html", apolice=apolice)
 
 # ======================
 # AGENDA
@@ -250,27 +347,83 @@ def apolices():
 
 @app.route("/nova_apolice", methods=["POST"])
 def nova_apolice():
-
+    # Pegando os valores do formulário
     cliente = request.form["cliente"]
-    seguro = request.form["seguro"]
     seguradora = request.form["seguradora"]
+    tipo_seguro = request.form["tipo_seguro"]
     valor = request.form["valor"]
-    inicio = request.form["inicio"]
-    renovacao = request.form["renovacao"]
+    comissao = request.form.get("comissao", 0)  # opcional
+    data_inicio = request.form["data_inicio"]
+    data_renovacao = request.form["data_renovacao"]
+    status = request.form.get("status", "Ativa")  # padrão Ativa
+    seguro = request.form.get("seguro", "")
 
+    # Conecta ao banco
     conn = conectar()
 
+    # Insere no banco
     conn.execute("""
         INSERT INTO apolices
-        (cliente,seguro,seguradora,valor,data_inicio,data_renovacao)
-        VALUES (?,?,?,?,?,?)
-    """,(cliente,seguro,seguradora,valor,inicio,renovacao))
+        (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro)
+        VALUES (?,?,?,?,?,?,?,?,?)
+    """, (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro))
 
     conn.commit()
     conn.close()
 
     return redirect("/apolices")
+    
+    #==================
+    # Exluir Cliente 
+    # ==================
+    
+@app.route("/excluir_cliente/<int:id>")
+def excluir_cliente(id):
 
+    conn = sqlite3.connect("database.db")
+
+    conn.execute("DELETE FROM clientes WHERE id=?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/clientes")
+    
+    
+ #=====================
+ # Editar Clientes
+ #=====================
+ 
+@app.route("/editar_cliente/<int:id>", methods=["GET","POST"])
+def editar_cliente(id):
+
+    conn = sqlite3.connect("database.db")
+
+    if request.method == "POST":
+
+        nome = request.form["nome"]
+        telefone = request.form["telefone"]
+        email = request.form["email"]
+
+        conn.execute(
+        "UPDATE clientes SET nome=?, telefone=?, email=? WHERE id=?",
+        (nome, telefone, email, id)
+        )
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/clientes")
+
+    cliente = conn.execute(
+        "SELECT * FROM clientes WHERE id=?",
+        (id,)
+    ).fetchone()
+
+    conn.close()
+
+    return render_template("editar_cliente.html", cliente=cliente)
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
