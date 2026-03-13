@@ -138,12 +138,18 @@ def novo_cliente():
     nome = request.form["nome"]
     telefone = request.form["telefone"]
     email = request.form["email"]
+    cpf = request.form["cpf"]
+    endereco = request.form["endereco"]
+    cep = request.form["cep"]
+    cidade = request.form["cidade"]
+    estado = request.form["estado"]
+    
 
     conn = conectar()
 
     conn.execute(
-        "INSERT INTO clientes (nome,telefone,email) VALUES (?,?,?)",
-        (nome,telefone,email)
+        "INSERT INTO clientes (nome,telefone,email,cpf,endereco,cep,cidade,estado) VALUES (?,?,?,?,?,?,?,?)",
+        (nome,telefone,email,cpf,endereco,cep,cidade,estado)
     )
 
     conn.commit()
@@ -224,67 +230,175 @@ def editar_lead(id):
     
     return render_template("editar_lead.html", lead=lead)
     
-    
-#=========================
-# Excluir e Editar Apoloices
-#=========================
 
-@app.route("/excluir_apolice/<int:id>")
-def excluir_apolice(id):
-    conn = sqlite3.connect("database.db")
-    conn.execute("DELETE FROM apolices WHERE id=?", (id,))
+
+# =========================
+# FUNÇÃO PARA TRATAR VALORES
+# =========================
+
+def converter_valor(valor_str):
+    if not valor_str:
+        return 0
+    
+    valor_str = valor_str.replace(".", "").replace(",", ".")
+    
+    try:
+        return float(valor_str)
+    except ValueError:
+        return 0
+
+
+# =========================
+# LISTAR APÓLICES
+# =========================
+
+@app.route("/apolices")
+def apolices():
+
+    conn = conectar()
+    cursor = conn.execute("SELECT * FROM apolices ORDER BY id DESC")
+    apolices = cursor.fetchall()
+    conn.close()
+
+    return render_template("apolices.html", apolices=apolices)
+
+
+# =========================
+# NOVA APÓLICE
+# =========================
+
+@app.route("/nova_apolice", methods=["POST"])
+def nova_apolice():
+
+    cliente = request.form["cliente"]
+    seguradora = request.form["seguradora"]
+    tipo_seguro = request.form["tipo_seguro"]
+
+    valor = converter_valor(request.form.get("valor"))
+    comissao = converter_valor(request.form.get("comissao"))
+
+    data_inicio = request.form["data_inicio"]
+    data_renovacao = request.form["data_renovacao"]
+
+    status = request.form.get("status", "Ativa")
+    seguro = request.form.get("seguro", "")
+    numero = request.form.get("numero", "")
+
+    conn = conectar()
+
+    conn.execute("""
+        INSERT INTO apolices
+        (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro, numero)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+    """, (
+        cliente,
+        seguradora,
+        tipo_seguro,
+        valor,
+        comissao,
+        data_inicio,
+        data_renovacao,
+        status,
+        seguro,
+        numero
+    ))
+
     conn.commit()
     conn.close()
+
     return redirect("/apolices")
-    
+
+
+# =========================
+# EDITAR APÓLICE
+# =========================
+
 @app.route("/editar_apolice/<int:id>", methods=["GET", "POST"])
 def editar_apolice(id):
+
     conn = conectar()
-    
-    # Pega a apólice pelo ID
-    apolice = conn.execute("SELECT * FROM apolices WHERE id=?", (id,)).fetchone()
-    
+
+    apolice = conn.execute(
+        "SELECT * FROM apolices WHERE id=?",
+        (id,)
+    ).fetchone()
+
     if not apolice:
         conn.close()
         return "Apólice não encontrada", 404
 
     if request.method == "POST":
-        # Campos do formulário
+
         cliente = request.form["cliente"]
         seguradora = request.form["seguradora"]
         tipo_seguro = request.form["tipo_seguro"]
-        
-        # Trata valor e comissão para float seguro
-        valor_str = request.form.get("valor", "0").replace(",", ".")
-        try:
-            valor = float(valor_str)
-        except ValueError:
-            valor = 0
 
-        comissao_str = request.form.get("comissao", "0").replace(",", ".")
-        try:
-            comissao = float(comissao_str)
-        except ValueError:
-            comissao = 0
+        valor = converter_valor(request.form.get("valor"))
+        comissao = converter_valor(request.form.get("comissao"))
 
         data_inicio = request.form["data_inicio"]
         data_renovacao = request.form["data_renovacao"]
+
         status = request.form.get("status", "Ativa")
         seguro = request.form.get("seguro", "")
+        numero = request.form.get("numero", "")
 
-        # Atualiza no banco
         conn.execute("""
             UPDATE apolices
-            SET cliente=?, seguradora=?, tipo_seguro=?, valor=?, comissao=?, data_inicio=?, data_renovacao=?, status=?, seguro=?
+            SET
+                cliente=?,
+                seguradora=?,
+                tipo_seguro=?,
+                valor=?,
+                comissao=?,
+                data_inicio=?,
+                data_renovacao=?,
+                status=?,
+                seguro=?,
+                numero=?
             WHERE id=?
-        """, (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro, id))
+        """, (
+            cliente,
+            seguradora,
+            tipo_seguro,
+            valor,
+            comissao,
+            data_inicio,
+            data_renovacao,
+            status,
+            seguro,
+            numero,
+            id
+        ))
 
         conn.commit()
         conn.close()
+
         return redirect("/apolices")
 
     conn.close()
+
     return render_template("editar_apolice.html", apolice=apolice)
+
+
+# =========================
+# EXCLUIR APÓLICE
+# =========================
+
+@app.route("/excluir_apolice/<int:id>")
+def excluir_apolice(id):
+
+    conn = conectar()
+
+    conn.execute(
+        "DELETE FROM apolices WHERE id=?",
+        (id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect("/apolices")    
 
 # ======================
 # AGENDA
@@ -324,54 +438,6 @@ def nova_tarefa():
 
     return redirect("/agenda")
     
-# ======================
-# APOLICES
-# ======================
-
-@app.route("/apolices")
-def apolices():
-
-    if "usuario" not in session:
-        return redirect("/login")
-
-    conn = conectar()
-
-    lista = conn.execute(
-        "SELECT * FROM apolices"
-    ).fetchall()
-
-    conn.close()
-
-    return render_template("apolices.html", apolices=lista)
-
-
-@app.route("/nova_apolice", methods=["POST"])
-def nova_apolice():
-    # Pegando os valores do formulário
-    cliente = request.form["cliente"]
-    seguradora = request.form["seguradora"]
-    tipo_seguro = request.form["tipo_seguro"]
-    valor = request.form["valor"]
-    comissao = request.form.get("comissao", 0)  # opcional
-    data_inicio = request.form["data_inicio"]
-    data_renovacao = request.form["data_renovacao"]
-    status = request.form.get("status", "Ativa")  # padrão Ativa
-    seguro = request.form.get("seguro", "")
-
-    # Conecta ao banco
-    conn = conectar()
-
-    # Insere no banco
-    conn.execute("""
-        INSERT INTO apolices
-        (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro)
-        VALUES (?,?,?,?,?,?,?,?,?)
-    """, (cliente, seguradora, tipo_seguro, valor, comissao, data_inicio, data_renovacao, status, seguro))
-
-    conn.commit()
-    conn.close()
-
-    return redirect("/apolices")
     
     #==================
     # Exluir Cliente 
@@ -404,11 +470,18 @@ def editar_cliente(id):
         nome = request.form["nome"]
         telefone = request.form["telefone"]
         email = request.form["email"]
+        cpf = request.form["cpf"]
+        endereco = request.form["endereco"]
+        cep = request.form["cep"]
+        cidade = request.form["cidade"]
+        estado = request.form["estado"]
+        
 
-        conn.execute(
-        "UPDATE clientes SET nome=?, telefone=?, email=? WHERE id=?",
-        (nome, telefone, email, id)
-        )
+        conn.execute("""
+            UPDATE clientes
+            SET nome=?, telefone=?, email=?, cpf=?,endereco=?, cep=?, cidade=?, estado=?
+            WHERE id=?
+        """, (nome, telefone, email, cpf, endereco, cep, cidade, estado, id))
 
         conn.commit()
         conn.close()

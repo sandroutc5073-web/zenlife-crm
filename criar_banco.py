@@ -37,6 +37,10 @@ CREATE TABLE IF NOT EXISTS clientes (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 nome TEXT,
 telefone TEXT,
+Endereco TEXT,
+Cep TEXT, 
+Cidade TEXT
+Estado TEXT
 email TEXT
 
 )

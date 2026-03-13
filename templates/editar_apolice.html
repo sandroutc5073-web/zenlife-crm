@@ -7,50 +7,55 @@
 <form method="POST">
     <div class="mb-3">
         <label>Cliente</label>
-        <input type="text" name="cliente" value="{{apolice[1]}}" class="form-control" required>
+        <input type="text" name="cliente" value="{{apolice['cliente']}}" class="form-control" required>
     </div>
     <div class="mb-3">
         <label>Seguradora</label>
-        <input type="text" name="seguradora" value="{{apolice[2]}}" class="form-control" required>
+        <input type="text" name="seguradora" value="{{apolice['seguradora']}}" class="form-control" required>
     </div>
     <div class="mb-3">
         <label>Tipo de Seguro</label>
         <select name="tipo_seguro" class="form-control" required>
-            <option {% if apolice[3]=='Auto' %}selected{% endif %}>Auto</option>
-            <option {% if apolice[3]=='Vida' %}selected{% endif %}>Vida</option>
-            <option {% if apolice[3]=='Saúde' %}selected{% endif %}>Saúde</option>
-            <option {% if apolice[3]=='Residencial' %}selected{% endif %}>Residencial</option>
-            <option {% if apolice[3]=='Empresarial' %}selected{% endif %}>Empresarial</option>
+            <option {% if apolice['tipo_seguro']=='Auto' %}selected{% endif %}>Auto</option>
+            <option {% if apolice['tipo_seguro']=='Vida' %}selected{% endif %}>Vida</option>
+            <option {% if apolice['tipo_seguro']=='Saúde' %}selected{% endif %}>Saúde</option>
+            <option {% if apolice['tipo_seguro']=='Residencial' %}selected{% endif %}>Residencial</option>
+            <option {% if apolice['tipo_seguro']=='Empresarial' %}selected{% endif %}>Empresarial</option>
         </select>
     </div>
     <div class="mb-3">
         <label>Valor</label>
-        <input type="number" step="0.01" name="valor" value="{{apolice[4]}}" class="form-control" required>
+        <input type="text" name="valor" value="{{apolice['valor']}}" class="form-control" required>
     </div>
     <div class="mb-3">
         <label>Comissão</label>
-        <input type="number" step="0.01" name="comissao" value="{{apolice[5]}}" class="form-control" required>
+        <input type="text" name="comissao" value="{{apolice['comissao']}}" class="form-control">
     </div>
     <div class="mb-3">
         <label>Data de Início</label>
-        <input type="date" name="data_inicio" value="{{apolice[6]}}" class="form-control" required>
+        <input type="date" name="data_inicio" value="{{apolice['data_inicio']}}" class="form-control" required>
     </div>
     <div class="mb-3">
         <label>Data de Renovação</label>
-        <input type="date" name="data_renovacao" value="{{apolice[7]}}" class="form-control" required>
+        <input type="date" name="data_renovacao" value="{{apolice['data_renovacao']}}" class="form-control" required>
     </div>
     <div class="mb-3">
         <label>Status</label>
-        <select name="status" class="form-control" required>
-            <option {% if apolice[8]=='Ativa' %}selected{% endif %}>Ativa</option>
-            <option {% if apolice[8]=='Expirada' %}selected{% endif %}>Expirada</option>
-            <option {% if apolice[8]=='Cancelada' %}selected{% endif %}>Cancelada</option>
+        <select name="status" class="form-control">
+            <option {% if apolice['status']=='Ativa' %}selected{% endif %}>Ativa</option>
+            <option {% if apolice['status']=='Expirada' %}selected{% endif %}>Expirada</option>
+            <option {% if apolice['status']=='Cancelada' %}selected{% endif %}>Cancelada</option>
         </select>
     </div>
     <div class="mb-3">
         <label>Seguro</label>
-        <input type="text" name="seguro" value="{{apolice[9]}}" class="form-control">
+        <input type="text" name="seguro" value="{{apolice['seguro']}}" class="form-control">
     </div>
+    <div class="mb-3">
+        <label>Número da Apólice</label>
+        <input type="text" name="numero" value="{{apolice['numero']}}" class="form-control">
+    </div>
+
     <button type="submit" class="btn btn-success">Salvar</button>
 </form>
 

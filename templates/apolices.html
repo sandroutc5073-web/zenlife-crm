@@ -4,68 +4,99 @@
 
 <h2>Apólices</h2>
 
-<!-- Formulário para nova apólice -->
 <form method="POST" action="/nova_apolice">
-    <div class="mb-3">
-        <label>Cliente</label>
-        <input type="text" name="cliente" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label>Tipo de Seguro</label>
-        <select name="seguro" class="form-control" required>
-            <option>Auto</option>
-            <option>Vida</option>
-            <option>Saúde</option>
-            <option>Residencial</option>
-            <option>Empresarial</option>
-        </select>
-    </div>
-    <div class="mb-3">
-        <label>Número da Apólice</label>
-        <input type="text" name="numero" class="form-control" required>
-    </div>
-    <div class="mb-3">
-        <label>Status</label>
-        <select name="status" class="form-control" required>
-            <option>Ativa</option>
-            <option>Expirada</option>
-            <option>Cancelada</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Salvar Apólice</button>
+  <div class="mb-3">
+      <label>Cliente</label>
+      <input type="text" name="cliente" class="form-control" required>
+  </div>
+  <div class="mb-3">
+      <label>Seguradora</label>
+      <input type="text" name="seguradora" class="form-control" required>
+  </div>
+  <div class="mb-3">
+      <label>Tipo de Seguro</label>
+      <select name="tipo_seguro" class="form-control" required>
+          <option>Auto</option>
+          <option>Vida</option>
+          <option>Saúde</option>
+          <option>Residencial</option>
+          <option>Empresarial</option>
+      </select>
+  </div>
+  <div class="mb-3">
+      <label>Valor</label>
+      <input type="text" name="valor" class="form-control" required>
+  </div>
+  <div class="mb-3">
+      <label>Comissão</label>
+      <input type="text" name="comissao" class="form-control">
+  </div>
+  <div class="mb-3">
+      <label>Data de Início</label>
+      <input type="date" name="data_inicio" class="form-control" required>
+  </div>
+  <div class="mb-3">
+      <label>Data de Renovação</label>
+      <input type="date" name="data_renovacao" class="form-control" required>
+  </div>
+  <div class="mb-3">
+      <label>Status</label>
+      <select name="status" class="form-control">
+          <option>Ativa</option>
+          <option>Expirada</option>
+          <option>Cancelada</option>
+      </select>
+  </div>
+  <div class="mb-3">
+      <label>Seguro</label>
+      <input type="text" name="seguro" class="form-control">
+  </div>
+  <div class="mb-3">
+      <label>Número da Apólice</label>
+      <input type="text" name="numero" class="form-control">
+  </div>
+
+  <button type="submit" class="btn btn-success">Salvar Apólice</button>
 </form>
 
 <hr>
 
 <h3>Lista de Apólices</h3>
-
 <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Tipo de Seguro</th>
-            <th>Número</th>
-            <th>Status</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for apolice in apolices %}
-        <tr>
-            <td>{{apolice[0]}}</td>
-            <td>{{apolice[1]}}</td>
-            <td>{{apolice[2]}}</td>
-            <td>{{apolice[3]}}</td>
-            <td>{{apolice[4]}}</td>
-            <td>
-                <a href="/editar_apolice/{{apolice[0]}}" class="btn btn-warning btn-sm">Editar</a>
-                <a href="/excluir_apolice/{{apolice[0]}}" class="btn btn-danger btn-sm" 
-                   onclick="return confirm('Deseja excluir esta apólice?')">Excluir</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Seguradora</th>
+<th>Tipo</th>
+<th>Valor</th>
+<th>Comissão</th>
+<th>Início</th>
+<th>Renovação</th>
+<th>Status</th>
+<th>Seguro</th>
+<th>Número</th>
+<th>Ações</th>
+</tr>
+
+{% for a in apolices %}
+<tr>
+<td>{{a['id']}}</td>
+<td>{{a['cliente']}}</td>
+<td>{{a['seguradora']}}</td>
+<td>{{a['tipo_seguro']}}</td>
+<td>{{a['valor']}}</td>
+<td>{{a['comissao']}}</td>
+<td>{{a['data_inicio']}}</td>
+<td>{{a['data_renovacao']}}</td>
+<td>{{a['status']}}</td>
+<td>{{a['seguro']}}</td>
+<td>{{a['numero']}}</td>
+<td>
+  <a href="/editar_apolice/{{a['id']}}" class="btn btn-warning btn-sm">Editar</a>
+  <a href="/excluir_apolice/{{a['id']}}" class="btn btn-danger btn-sm">Excluir</a>
+</td>
+</tr>
+{% endfor %}
 </table>
 
 {% endblock %}
